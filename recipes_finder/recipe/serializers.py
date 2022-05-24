@@ -1,5 +1,11 @@
 from rest_framework import serializers
-from recipe.models import Integrent
+from recipe.models import Integrent, IntegrentType
+
+
+class IntegrentTypeSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = IntegrentType
+        fields = ['name']
 
 
 class IntegrentSerializer(serializers.ModelSerializer):
