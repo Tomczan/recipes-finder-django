@@ -9,6 +9,8 @@ class IntegrentTypeSerializer(serializers.ModelSerializer):
 
 
 class IntegrentSerializer(serializers.ModelSerializer):
+    type = IntegrentTypeSerializer()
+
     class Meta:
         model = Integrent
         fields = ['name', 'prefered_unit', 'type']
