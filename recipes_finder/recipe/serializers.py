@@ -17,6 +17,7 @@ class IntegrentSerializer(serializers.ModelSerializer):
 
 
 class RecipeIntegrentsSerializer(serializers.ModelSerializer):
+    integrent = IntegrentSerializer()
 
     class Meta:
         model = RecipeIntegrents
