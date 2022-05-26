@@ -1,9 +1,8 @@
 from django import views
 from django.shortcuts import render
+from recipe.models import Integrent, IntegrentType, Recipe
+from recipe.serializers import IntegrentSerializer, IntegrentTypeSerializer, RecipeSerializer
 from rest_framework import viewsets
-
-from recipe.serializers import IntegrentSerializer, IntegrentTypeSerializer
-from recipe.models import Integrent, IntegrentType
 
 # Create your views here.
 
@@ -16,3 +15,8 @@ class IntegrentTypeViewSet(viewsets.ModelViewSet):
 class IntegrentViewSet(viewsets.ModelViewSet):
     queryset = Integrent.objects.all()
     serializer_class = IntegrentSerializer
+
+
+class RecipeViewSet(viewsets.ModelViewSet):
+    queryset = Recipe.objects.all()
+    serializer_class = RecipeSerializer

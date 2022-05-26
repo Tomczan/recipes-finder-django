@@ -48,6 +48,9 @@ class Recipe(models.Model):
     def __str__(self) -> str:
         return self.name
 
+# TODO: https://docs.djangoproject.com/en/4.0/ref/models/fields/#django.db.models.ManyToManyField.through
+# add: UniqueConstraint
+
 
 class RecipeIntegrents(models.Model):
     amount = models.IntegerField(default=0)
