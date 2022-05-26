@@ -24,6 +24,9 @@ class Integrent(models.Model):
         max_length=2, choices=UNIT_CHOICES, blank=False)
     type = models.ForeignKey(IntegrentType, on_delete=models.PROTECT)
 
+    class Meta:
+        ordering = ('name',)
+
     def __str__(self) -> str:
         return self.name
 
@@ -51,3 +54,6 @@ class RecipeIntegrents(models.Model):
     unit = models.CharField(max_length=2, choices=UNIT_CHOICES, blank=False)
     integrent = models.ForeignKey(Integrent, on_delete=models.PROTECT)
     recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+
+    def __str__(self) -> str:
+        return self.integrent.name
