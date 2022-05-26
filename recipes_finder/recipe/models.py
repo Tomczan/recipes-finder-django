@@ -55,8 +55,10 @@ class Recipe(models.Model):
 class RecipeIntegrents(models.Model):
     amount = models.IntegerField(default=0)
     unit = models.CharField(max_length=2, choices=UNIT_CHOICES, blank=False)
-    integrent = models.ForeignKey(Integrent, on_delete=models.PROTECT)
-    recipe = models.ForeignKey(Recipe, on_delete=models.CASCADE)
+    integrent = models.ForeignKey(
+        Integrent, on_delete=models.PROTECT, related_name='integrent_to_recipe')
+    recipe = models.ForeignKey(
+        Recipe, on_delete=models.CASCADE, related_name='recipe_to_integrent')
 
     def __str__(self) -> str:
         return self.integrent.name

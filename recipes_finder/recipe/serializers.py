@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from recipe.models import Integrent, IntegrentType, Recipe
+from recipe.models import Integrent, IntegrentType, Recipe, RecipeIntegrents
 
 
 class IntegrentTypeSerializer(serializers.ModelSerializer):
@@ -16,9 +16,17 @@ class IntegrentSerializer(serializers.ModelSerializer):
         fields = ['name', 'prefered_unit', 'type']
 
 
+class RecipeIntegrentsSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = RecipeIntegrents
+        fields = ['amount', 'unit', 'integrent']
+
+
 class RecipeSerializer(serializers.ModelSerializer):
-    integrents = IntegrentSerializer
+    integrents = RecipeIntegrentsSerializer(
+        source='recipe_to_integrent', read_only=True, many=True)
 
     class Meta:
         model = Recipe
-        fields = ['name', 'description', 'instructions', 'integrents']
+        fields = ['id', 'name', 'description', 'instructions', 'integrents']
