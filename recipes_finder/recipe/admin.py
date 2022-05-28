@@ -1,24 +1,24 @@
 from django.contrib import admin
-from .models import Recipe, Integrent, IntegrentType, RecipeIntegrents
+from .models import Recipe, Ingredient, IngredientType, RecipeIngredients
 
 # Register your models here.
 
 
-class RecipeIntegrentsInLine(admin.TabularInline):
-    model = RecipeIntegrents
+class RecipeIngredientsInLine(admin.TabularInline):
+    model = RecipeIngredients
     extra = 1
 
 
-@admin.register(IntegrentType)
-class IntegrentTypeAdmin(admin.ModelAdmin):
+@admin.register(IngredientType)
+class IngredientTypeAdmin(admin.ModelAdmin):
     list_display = ('name',)
 
 
-@admin.register(Integrent)
-class IntegrentAdmin(admin.ModelAdmin):
-    inlines = (RecipeIntegrentsInLine,)
+@admin.register(Ingredient)
+class IngredientAdmin(admin.ModelAdmin):
+    inlines = (RecipeIngredientsInLine,)
 
 
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
-    inlines = (RecipeIntegrentsInLine,)
+    inlines = (RecipeIngredientsInLine,)

@@ -1,20 +1,22 @@
 from django import views
 from django.shortcuts import render
-from recipe.models import Integrent, IntegrentType, Recipe
-from recipe.serializers import IntegrentSerializer, IntegrentTypeSerializer, RecipeSerializer
+from recipe.models import Ingredient, IngredientType, Recipe
+from recipe.serializers import (
+    IngredientSerializer, IngredientTypeSerializer, RecipeSerializer
+)
 from rest_framework import viewsets
 
 # Create your views here.
 
 
-class IntegrentTypeViewSet(viewsets.ModelViewSet):
-    queryset = IntegrentType.objects.all()
-    serializer_class = IntegrentTypeSerializer
+class IngredientTypeViewSet(viewsets.ModelViewSet):
+    queryset = IngredientType.objects.all()
+    serializer_class = IngredientTypeSerializer
 
 
-class IntegrentViewSet(viewsets.ModelViewSet):
-    queryset = Integrent.objects.all()
-    serializer_class = IntegrentSerializer
+class IngredientViewSet(viewsets.ModelViewSet):
+    queryset = Ingredient.objects.all()
+    serializer_class = IngredientSerializer
 
 
 class RecipeViewSet(viewsets.ModelViewSet):

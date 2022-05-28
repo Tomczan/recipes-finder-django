@@ -11,18 +11,18 @@ UNIT_CHOICES = [
 ]
 
 
-class IntegrentType(models.Model):
+class IngredientType(models.Model):
     name = models.CharField(max_length=200)
 
     def __str__(self) -> str:
         return self.name
 
 
-class Integrent(models.Model):
+class Ingredient(models.Model):
     name = models.CharField(max_length=200)
     prefered_unit = models.CharField(
         max_length=2, choices=UNIT_CHOICES, blank=False)
-    type = models.ForeignKey(IntegrentType, on_delete=models.PROTECT)
+    type = models.ForeignKey(IngredientType, on_delete=models.PROTECT)
 
     class Meta:
         ordering = ('name',)
@@ -40,7 +40,8 @@ class Recipe(models.Model):
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     is_visible = models.BooleanField(default=False)
-    integrents = models.ManyToManyField(Integrent, through='RecipeIntegrents')
+    ingredients = models.ManyToManyField(
+        Ingredient, through='RecipeIngredients')
 
     class Meta:
         ordering = ('-created',)
@@ -52,13 +53,13 @@ class Recipe(models.Model):
 # add: UniqueConstraint
 
 
-class RecipeIntegrents(models.Model):
+class RecipeIngredients(models.Model):
     amount = models.IntegerField(default=0)
     unit = models.CharField(max_length=2, choices=UNIT_CHOICES, blank=False)
-    integrent = models.ForeignKey(
-        Integrent, on_delete=models.PROTECT, related_name='integrent_to_recipe')
+    ingredient = models.ForeignKey(
+        Ingredient, on_delete=models.PROTECT, related_name='ingredient_to_recipe')
     recipe = models.ForeignKey(
-        Recipe, on_delete=models.CASCADE, related_name='recipe_to_integrent')
+        Recipe, on_delete=models.CASCADE, related_name='recipe_to_ingredient')
 
     def __str__(self) -> str:
-        return self.integrent.name
+        return self.ingredient.name

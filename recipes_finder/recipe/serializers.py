@@ -1,33 +1,33 @@
 from rest_framework import serializers
-from recipe.models import Integrent, IntegrentType, Recipe, RecipeIntegrents
+from recipe.models import Ingredient, IngredientType, Recipe, RecipeIngredients
 
 
-class IntegrentTypeSerializer(serializers.ModelSerializer):
+class IngredientTypeSerializer(serializers.ModelSerializer):
     class Meta:
-        model = IntegrentType
+        model = IngredientType
         fields = ['name']
 
 
-class IntegrentSerializer(serializers.ModelSerializer):
-    type = IntegrentTypeSerializer()
+class IngredientSerializer(serializers.ModelSerializer):
+    type = IngredientTypeSerializer()
 
     class Meta:
-        model = Integrent
+        model = Ingredient
         fields = ['name', 'prefered_unit', 'type']
 
 
-class RecipeIntegrentsSerializer(serializers.ModelSerializer):
-    integrent = IntegrentSerializer()
+class RecipeIngredientsSerializer(serializers.ModelSerializer):
+    ingredient = IngredientSerializer()
 
     class Meta:
-        model = RecipeIntegrents
-        fields = ['amount', 'unit', 'integrent']
+        model = RecipeIngredients
+        fields = ['amount', 'unit', 'ingredient']
 
 
 class RecipeSerializer(serializers.ModelSerializer):
-    integrents = RecipeIntegrentsSerializer(
-        source='recipe_to_integrent', read_only=True, many=True)
+    ingredients = RecipeIngredientsSerializer(
+        source='recipe_to_ingredient', read_only=True, many=True)
 
     class Meta:
         model = Recipe
-        fields = ['id', 'name', 'description', 'instructions', 'integrents']
+        fields = ['id', 'name', 'description', 'instructions', 'ingredients']
