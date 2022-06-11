@@ -4,7 +4,7 @@ from recipe.models import Ingredient, IngredientType, Recipe
 from recipe.serializers import (
     IngredientSerializer, IngredientTypeSerializer, RecipeSerializer
 )
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticatedOrReadOnly
 
 # Create your views here.
@@ -26,3 +26,7 @@ class RecipeViewSet(viewsets.ModelViewSet):
     queryset = Recipe.objects.all()
     serializer_class = RecipeSerializer
     permission_classes = [IsAuthenticatedOrReadOnly]
+
+class IngredientTypeGenericView(generics.ListAPIView):
+    queryset = IngredientType.objects.all()
+    serializer_class = IngredientTypeSerializer
