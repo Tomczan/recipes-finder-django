@@ -3,7 +3,7 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 
 from .views import (IngredientTypeGenericView, IngredientTypeViewSet,
-                    IngredientViewSet, RecipeViewSet)
+                    IngredientViewSet, RecipeViewSet, CreateUserView)
 
 
 router = routers.DefaultRouter()
@@ -15,5 +15,6 @@ urlpatterns = [
     path('ingredient-type/', IngredientTypeGenericView.as_view(),
          name='ingredient_type'),
     path('api-token-auth/', views.obtain_auth_token),
+    path('create-user/', CreateUserView.as_view()),
     path('', include(router.urls)),
 ]
