@@ -1,5 +1,6 @@
-from django.db import models
 from django.contrib.auth.models import User
+from django.db import models
+from django.urls import reverse
 
 # Create your models here.
 # https://github.com/dgrant/django_recipes/blob/ff68768fd3b1282f02bae3a041e624b8d5338f16/recipes/models.py#L319
@@ -52,6 +53,14 @@ class Recipe(models.Model):
 
     def __str__(self) -> str:
         return self.name
+
+    def get_absolute_url(self):
+        return reverse("recipe:recipe_detail", args=[self.created.year,
+                                                     self.created.strftime(
+                                                         '%m'),
+                                                     self.created.strftime(
+                                                         '%d'),
+                                                     self.slug])
 
 
 class RecipeIngredients(models.Model):
