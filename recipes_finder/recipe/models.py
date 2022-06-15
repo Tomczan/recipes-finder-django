@@ -1,4 +1,5 @@
 from django.db import models
+from django.contrib.auth.models import User
 
 # Create your models here.
 # https://github.com/dgrant/django_recipes/blob/ff68768fd3b1282f02bae3a041e624b8d5338f16/recipes/models.py#L319
@@ -33,6 +34,7 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     name = models.CharField(max_length=200)
+    slug = models.SlugField(max_length=200, unique_for_date='created')
     description = models.TextField()
     instructions = models.TextField()
     # image = models.ImageField(
@@ -40,6 +42,8 @@ class Recipe(models.Model):
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     is_visible = models.BooleanField(default=False)
+    author = models.ForeignKey(
+        User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(
         Ingredient, through='RecipeIngredients')
 
@@ -48,9 +52,6 @@ class Recipe(models.Model):
 
     def __str__(self) -> str:
         return self.name
-
-# TODO: https://docs.djangoproject.com/en/4.0/ref/models/fields/#django.db.models.ManyToManyField.through
-# add: UniqueConstraint
 
 
 class RecipeIngredients(models.Model):
