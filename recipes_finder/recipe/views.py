@@ -16,12 +16,8 @@ def recipe_list(request):
                   {'recipes': recipes})
 
 
-def recipe_detail(request, year, month, day, recipe):
-    recipe = get_object_or_404(Recipe, slug=recipe,
-                               is_visible=True,
-                               created__year=year,
-                               created__month=month,
-                               created__day=day)
+def recipe_detail(request, slug, id):
+    recipe = get_object_or_404(Recipe, slug=slug, id=id)
     return render(request,
                   'recipe/detail.html',
                   {'recipe': recipe})

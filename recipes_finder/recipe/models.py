@@ -56,10 +56,8 @@ class Recipe(models.Model):
 
     def get_absolute_url(self):
         return reverse("recipe:recipe_detail",
-                       args=[self.created.year,
-                             self.created.strftime('%m'),
-                             self.created.strftime('%d'),
-                             self.slug])
+                       args=[self.slug,
+                             self.id])
 
 
 class RecipeIngredients(models.Model):
