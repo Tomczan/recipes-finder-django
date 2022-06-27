@@ -1,0 +1,9 @@
+{% block content %}
+
+<h2>
+    <a href="{{ recipe.get_absolute_url }}">{{recipe.name}}</a>
+</h2>
+    <p>Slug: {{ recipe.slug }}</p><br>
+    <p>Opis: {{ recipe.description|linebreaks }}</p>
+
+{% endblock content %}
