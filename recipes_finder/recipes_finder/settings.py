@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/3.2/ref/settings/
 
 from pathlib import Path
 from decouple import config
+from django.urls import reverse_lazy
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -32,6 +33,7 @@ ALLOWED_HOSTS = []
 # Application definition
 
 INSTALLED_APPS = [
+    'account',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -42,7 +44,6 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'recipe',
     'api',
-    'account',
 ]
 
 MIDDLEWARE = [
@@ -134,5 +135,12 @@ STATIC_URL = '/static/'
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-LOGIN_URL = 'login'
-LOGOUT_URL = 'logout'
+# Login and logout urls
+
+LOGIN_REDIRECT_URL = 'recipe:home'
+LOGIN_URL = 'account:login'
+LOGOUT_URL = 'account:logout'
+
+# E-mail backend
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'

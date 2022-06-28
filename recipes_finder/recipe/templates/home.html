@@ -1,4 +1,11 @@
+{% extends "base.html" %}
+
 {% block content %}
+
+Uzytkownik {{ user.get_username }}
+
+<br>
+
 <a href="http://127.0.0.1:8000/api/">API</a>
     <br>
 <a href="http://127.0.0.1:8000/admin">ADMIN</a>
@@ -6,5 +13,9 @@
 <a href="http://127.0.0.1:8000/list/">RECIPE LIST</a>
 <br>
 <a href="http://127.0.0.1:8000/account/login/">Login</a>
+<br>
+<a href="http://127.0.0.1:8000/account/logout/">Logout</a>
+<br>
+<a href="http://127.0.0.1:8000/account/password_reset/">Password reset</a>
 {% endblock content %}
     
