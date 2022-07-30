@@ -1,21 +1,54 @@
 {% extends "base.html" %}
 
+{% block login_form %}
+<form action="/login/" method="post">
+    {{ login_form.as_p }}
+    {% csrf_token %}
+</form>
+{% endblock login_form %}
+
+{% block modal_body %}
+<form action="/account/login/" method="post">
+    {{ login_form.as_p }}
+    {% csrf_token %}
+    <p><input type="submit" value="Zaloguj"></p>
+</form>
+{% endblock modal_body %}
+
 {% block content %}
-
-Uzytkownik {{ user.get_username }}
-
-<br>
-
-<a href="http://127.0.0.1:8000/api/">API</a>
-    <br>
-<a href="http://127.0.0.1:8000/admin">ADMIN</a>
-<br>
-<a href="http://127.0.0.1:8000/list/">RECIPE LIST</a>
-<br>
-<a href="http://127.0.0.1:8000/account/login/">Login</a>
-<br>
-<a href="http://127.0.0.1:8000/account/logout/">Logout</a>
-<br>
-<a href="http://127.0.0.1:8000/account/password_reset/">Password reset</a>
+<div class="container">
+    <div class="row">
+        <div class="col-md-1 d-none d-md-block">
+            Left side bar
+        </div>
+        <div class="col-xs-8 col-md-7 ">            
+            Uzytkownik {{ user.get_username }}
+            <br>
+            <a href="http://127.0.0.1:8000/api/">API</a>
+            <br>
+            <a href="http://127.0.0.1:8000/admin">ADMIN</a>
+            <br>
+            <a href="http://127.0.0.1:8000/list/">RECIPE LIST</a>
+            <br>
+            <a href="http://127.0.0.1:8000/account/login/">Login</a>
+            <br>
+            <a href="http://127.0.0.1:8000/account/logout/">Logout</a>
+            <br>
+            <a href="http://127.0.0.1:8000/account/password_reset/">Password reset</a>
+        </div>
+        <div class="col-md-3 col-sx-4">
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+            Right side barRight side bar <br>
+        </div>            
+    </div>
+</div>
 {% endblock content %}
     

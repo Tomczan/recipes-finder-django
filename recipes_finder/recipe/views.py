@@ -2,11 +2,14 @@ from django.shortcuts import get_object_or_404, render
 
 from .models import Recipe
 
+from account.forms import LoginForm
+
 # Create your views here.
 
 
-def home(request):    
-    return render(request, "home.html")
+def home(request):
+    login_form = LoginForm(request.POST)
+    return render(request, "home.html", {'login_form': login_form})
 
 
 def recipe_list(request):
