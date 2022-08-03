@@ -34,6 +34,11 @@ class Ingredient(models.Model):
 
 
 class Recipe(models.Model):
+    STATUS_CHOICES = (
+        ('draft', 'Draft'),
+        ('published', 'Published'),
+        ('hidden', 'Hidden')
+    )
     name = models.CharField(max_length=200)
     slug = models.SlugField(max_length=200, unique_for_date='created')
     description = models.TextField()
@@ -42,7 +47,9 @@ class Recipe(models.Model):
     #     upload_to='recipes/%Y/%m/%d', height_field=None, width_field=None, max_length=100)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
-    is_visible = models.BooleanField(default=False)
+    status = models.CharField(max_length=10,
+                              choices=STATUS_CHOICES,
+                              default='draft')
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(
