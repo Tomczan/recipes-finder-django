@@ -35,8 +35,8 @@ class Ingredient(models.Model):
 
 class Recipe(models.Model):
     STATUS_CHOICES = (
-        ('draft', 'Draft'),
-        ('published', 'Published'),
+        ('approved', 'Approved'),
+        ('unapproved', 'Unapproved'),
         ('hidden', 'Hidden')
     )
     name = models.CharField(max_length=200)
@@ -49,7 +49,7 @@ class Recipe(models.Model):
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     status = models.CharField(max_length=10,
                               choices=STATUS_CHOICES,
-                              default='draft')
+                              default='unapproved')
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(

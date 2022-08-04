@@ -1,8 +1,10 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+from django.contrib import messages
 from django.contrib.auth import authenticate, login
-from .forms import LoginForm, UserRegistrationForm
+from django.http import HttpResponse
+from django.shortcuts import render, redirect
 from django.views import View
+
+from .forms import LoginForm, UserRegistrationForm
 
 # Create your views here.
 
@@ -34,9 +36,12 @@ class RegisterView(View):
             new_user = registration_form.save(commit=False)
             new_user.set_password(registration_form.cleaned_data['password'])
             new_user.save()
-            return render(request,
-                          'registration/register_done.html',
-                          {'new_user': new_user})
+            messages.success(
+                request, f'Account created for {new_user.username}! Now you can log-in.')
+            return redirect('account:login')
+            # return render(request,
+            #               'registration/register_done.html',
+            #               {'new_user': new_user})
 
     def get(self, request):
         registration_form = UserRegistrationForm()
