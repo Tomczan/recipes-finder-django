@@ -1,10 +1,12 @@
+import profile
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.decorators import login_required
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect, render
 from django.views import View
 
-from .forms import LoginForm, UserRegistrationForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
 
 # Create your views here.
 
@@ -48,3 +50,28 @@ class RegisterView(View):
         return render(request,
                       'registration/register.html',
                       {'registration_form': registration_form})
+
+
+@login_required
+class UserAndProfileEditView(View):
+    def post(self, request):
+        user_form = UserEditForm(instance=request.user,
+                                 data=request.POST)
+        profile_form = ProfileEditForm(instance=request.user.profile,
+                                       data=request.POST,
+                                       files=request.FILES)
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+        return render(request,
+                        'account/edit.html',
+                        {'user_form': user_form,
+                        'profile_form': profile_form})
+
+    def get(self, request):
+        user_form = UserEditForm(instance=request.user)
+        profile_form = ProfileEditForm(instance=request.user.profile)
+        return render(request,
+                      'account/edit.html',
+                      {'user_form': user_form,
+                       'profile_form': profile_form})
