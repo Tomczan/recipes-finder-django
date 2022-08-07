@@ -35,3 +35,9 @@ class ProfileEditForm(forms.ModelForm):
     class Meta:
         model = Profile
         fields = ('nickname', 'photo')
+
+
+class UserEmailEditForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ('email',)

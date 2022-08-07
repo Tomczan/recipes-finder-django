@@ -2,11 +2,12 @@ import profile
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
 from django.views import View
 
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm
+from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, UserEmailEditForm
 
 # Create your views here.
 
@@ -64,9 +65,9 @@ class UserAndProfileEditView(View):
             user_form.save()
             profile_form.save()
         return render(request,
-                        'account/edit.html',
-                        {'user_form': user_form,
-                        'profile_form': profile_form})
+                      'account/edit.html',
+                      {'user_form': user_form,
+                       'profile_form': profile_form})
 
     def get(self, request):
         user_form = UserEditForm(instance=request.user)
@@ -75,3 +76,22 @@ class UserAndProfileEditView(View):
                       'account/edit.html',
                       {'user_form': user_form,
                        'profile_form': profile_form})
+
+
+class UserEmailEditView(View):
+    @method_decorator(login_required(login_url='login'))
+    def post(self, request):
+        profile_form = UserEmailEditForm(instance=request.user.profile,
+                                         data=request.POST)
+        if profile_form.is_valid():
+            profile_form.save()
+        return render(request,
+                      'account/settings/email.html',
+                      {'profile_form': profile_form})
+
+    @method_decorator(login_required(login_url='login'))
+    def get(self, request):
+        profile_form = UserEmailEditForm(instance=request.user.profile)
+        return render(request,
+                      'account/settings/email.html',
+                      {'profile_form': profile_form})
