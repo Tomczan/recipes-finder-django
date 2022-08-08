@@ -81,17 +81,18 @@ class UserAndProfileEditView(View):
 class UserEmailEditView(View):
     @method_decorator(login_required(login_url='login'))
     def post(self, request):
-        profile_form = UserEmailEditForm(instance=request.user.profile,
-                                         data=request.POST)
-        if profile_form.is_valid():
-            profile_form.save()
+        email_form = UserEmailEditForm(instance=request.user,
+                                       data=request.POST)
+        if email_form.is_valid():
+            email_form.save()
+            messages.success(request, f'Email changed successfully')
         return render(request,
                       'account/settings/email.html',
-                      {'profile_form': profile_form})
+                      {'email_form': email_form})
 
     @method_decorator(login_required(login_url='login'))
     def get(self, request):
-        profile_form = UserEmailEditForm(instance=request.user.profile)
+        email_form = UserEmailEditForm(instance=request.user)
         return render(request,
                       'account/settings/email.html',
-                      {'profile_form': profile_form})
+                      {'email_form': email_form})
