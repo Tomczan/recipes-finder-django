@@ -1,13 +1,15 @@
-import profile
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
-from django.utils.decorators import method_decorator
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
 from django.shortcuts import redirect, render
+from django.utils.decorators import method_decorator
 from django.views import View
 
-from .forms import LoginForm, UserRegistrationForm, UserEditForm, ProfileEditForm, UserEmailEditForm
+from .forms import (LoginForm, ProfileEditForm, UserEditForm,
+                    UserEmailEditForm, UserPasswordEditForm,
+                    UserRegistrationForm)
 
 # Create your views here.
 
@@ -53,8 +55,9 @@ class RegisterView(View):
                       {'registration_form': registration_form})
 
 
-class UserAndProfileEditView(View):
-    @method_decorator(login_required(login_url='login'))
+class UserAndProfileEditView(LoginRequiredMixin, View):
+    login_url = 'account:login'
+
     def post(self, request):
         user_form = UserEditForm(instance=request.user,
                                  data=request.POST)
@@ -69,7 +72,6 @@ class UserAndProfileEditView(View):
                       {'user_form': user_form,
                        'profile_form': profile_form})
 
-    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         user_form = UserEditForm(instance=request.user)
         profile_form = ProfileEditForm(instance=request.user.profile)
@@ -79,8 +81,9 @@ class UserAndProfileEditView(View):
                        'profile_form': profile_form})
 
 
-class UserEmailEditView(View):
-    @method_decorator(login_required(login_url='login'))
+class UserEmailEditView(LoginRequiredMixin, View):
+    login_url = 'account:login'
+
     def post(self, request):
         email_form = UserEmailEditForm(instance=request.user,
                                        data=request.POST)
@@ -91,9 +94,28 @@ class UserEmailEditView(View):
                       'account/settings/email_change.html',
                       {'email_form': email_form})
 
-    @method_decorator(login_required(login_url='login'))
     def get(self, request):
         email_form = UserEmailEditForm(instance=request.user)
         return render(request,
                       'account/settings/email_change.html',
                       {'email_form': email_form})
+
+
+# class UserPasswordChangeView(LoginRequiredMixin, View):
+#     login_url = 'account:login'
+
+#     def post(self, request):
+#         password = UserEmailEditForm(instance=request.user,
+#                                      data=request.POST)
+#         if email_form.is_valid():
+#             email_form.save()
+#             messages.success(request, f'Email changed successfully')
+#         return render(request,
+#                       'account/settings/email_change.html',
+#                       {'email_form': email_form})
+
+#     def get(self, request):
+#         email_form = UserEmailEditForm(instance=request.user)
+#         return render(request,
+#                       'account/settings/email_change.html',
+#                       {'email_form': email_form})

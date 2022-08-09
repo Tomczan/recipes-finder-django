@@ -31,13 +31,19 @@ class UserEditForm(forms.ModelForm):
         fields = ('first_name', 'last_name')
 
 
-class ProfileEditForm(forms.ModelForm):
+class UserPasswordEditForm(forms.ModelForm):
     class Meta:
-        model = Profile
-        fields = ('nickname', 'photo')
+        model = User
+        fields = ('password',)
 
 
 class UserEmailEditForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ('email',)
+
+
+class ProfileEditForm(forms.ModelForm):
+    class Meta:
+        model = Profile
+        fields = ('nickname', 'photo')
