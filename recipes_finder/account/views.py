@@ -7,8 +7,8 @@ from django.shortcuts import redirect, render
 from django.utils.decorators import method_decorator
 from django.views import View
 
-from .forms import (LoginForm, ProfileEditForm, UserEditForm,
-                    UserEmailEditForm, UserPasswordEditForm,
+from .forms import (LoginForm, ProfileUpdateForm, UserUpdateForm,
+                    UserEmailUpdateForm, UserPasswordUpdateForm,
                     UserRegistrationForm)
 
 # Create your views here.
@@ -55,15 +55,15 @@ class RegisterView(View):
                       {'registration_form': registration_form})
 
 
-class UserAndProfileEditView(LoginRequiredMixin, View):
+class UserAndProfileUpdateView(LoginRequiredMixin, View):
     login_url = 'account:login'
 
     def post(self, request):
-        user_form = UserEditForm(instance=request.user,
-                                 data=request.POST)
-        profile_form = ProfileEditForm(instance=request.user.profile,
-                                       data=request.POST,
-                                       files=request.FILES)
+        user_form = UserUpdateForm(instance=request.user,
+                                   data=request.POST)
+        profile_form = ProfileUpdateForm(instance=request.user.profile,
+                                         data=request.POST,
+                                         files=request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
@@ -73,20 +73,20 @@ class UserAndProfileEditView(LoginRequiredMixin, View):
                        'profile_form': profile_form})
 
     def get(self, request):
-        user_form = UserEditForm(instance=request.user)
-        profile_form = ProfileEditForm(instance=request.user.profile)
+        user_form = UserUpdateForm(instance=request.user)
+        profile_form = ProfileUpdateForm(instance=request.user.profile)
         return render(request,
                       'account/settings/profile_info_change.html',
                       {'user_form': user_form,
                        'profile_form': profile_form})
 
 
-class UserEmailEditView(LoginRequiredMixin, View):
+class UserEmailUpdateView(LoginRequiredMixin, View):
     login_url = 'account:login'
 
     def post(self, request):
-        email_form = UserEmailEditForm(instance=request.user,
-                                       data=request.POST)
+        email_form = UserEmailUpdateForm(instance=request.user,
+                                         data=request.POST)
         if email_form.is_valid():
             email_form.save()
             messages.success(request, f'Email changed successfully')
@@ -95,7 +95,7 @@ class UserEmailEditView(LoginRequiredMixin, View):
                       {'email_form': email_form})
 
     def get(self, request):
-        email_form = UserEmailEditForm(instance=request.user)
+        email_form = UserEmailUpdateForm(instance=request.user)
         return render(request,
                       'account/settings/email_change.html',
                       {'email_form': email_form})
@@ -105,7 +105,7 @@ class UserEmailEditView(LoginRequiredMixin, View):
 #     login_url = 'account:login'
 
 #     def post(self, request):
-#         password = UserEmailEditForm(instance=request.user,
+#         password = UserEmailUpdateForm(instance=request.user,
 #                                      data=request.POST)
 #         if email_form.is_valid():
 #             email_form.save()
@@ -115,7 +115,7 @@ class UserEmailEditView(LoginRequiredMixin, View):
 #                       {'email_form': email_form})
 
 #     def get(self, request):
-#         email_form = UserEmailEditForm(instance=request.user)
+#         email_form = UserEmailUpdateForm(instance=request.user)
 #         return render(request,
 #                       'account/settings/email_change.html',
 #                       {'email_form': email_form})
