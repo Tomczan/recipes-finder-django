@@ -35,69 +35,74 @@ from .forms import (LoginForm, ProfileUpdateForm, UserUpdateForm,
 #         return render(request, 'account/login.html', {'form': form})
 
 class RegisterView(View):
+    registration_form = UserRegistrationForm
+    template_name = 'registration/register.html'
+
     def post(self, request):
-        registration_form = UserRegistrationForm(request.POST)
-        if registration_form.is_valid():
-            new_user = registration_form.save(commit=False)
-            new_user.set_password(registration_form.cleaned_data['password'])
+        form = self.registration_form(request.POST)
+        if form.is_valid():
+            new_user = form.save(commit=False)
+            new_user.set_password(form.cleaned_data['password'])
             new_user.save()
             messages.success(
-                request, f'Account created for {new_user.username}! Now you can log-in.')
+                request, f'The account for the {new_user.username} has been created! Now you can log-in.')
             return redirect('account:login')
-            # return render(request,
-            #               'registration/register_done.html',
-            #               {'new_user': new_user})
 
     def get(self, request):
-        registration_form = UserRegistrationForm()
+        form = self.registration_form()
         return render(request,
-                      'registration/register.html',
-                      {'registration_form': registration_form})
+                      self.template_name,
+                      {'registration_form': form})
 
 
 class UserAndProfileUpdateView(LoginRequiredMixin, View):
+    profile_form = ProfileUpdateForm
+    user_form = UserUpdateForm
     login_url = 'account:login'
+    template_name = 'account/settings/profile_info_change.html'
 
     def post(self, request):
-        user_form = UserUpdateForm(instance=request.user,
+        user_form = self.user_form(instance=request.user,
                                    data=request.POST)
-        profile_form = ProfileUpdateForm(instance=request.user.profile,
+        profile_form = self.profile_form(instance=request.user.profile,
                                          data=request.POST,
                                          files=request.FILES)
         if user_form.is_valid() and profile_form.is_valid():
             user_form.save()
             profile_form.save()
         return render(request,
-                      'account/settings/profile_info_change.html',
+                      self.template_name,
                       {'user_form': user_form,
                        'profile_form': profile_form})
 
     def get(self, request):
-        user_form = UserUpdateForm(instance=request.user)
-        profile_form = ProfileUpdateForm(instance=request.user.profile)
+        user_form = self.user_form(instance=request.user)
+        profile_form = self.profile_form(instance=request.user.profile)
         return render(request,
-                      'account/settings/profile_info_change.html',
+                      self.template_name,
                       {'user_form': user_form,
                        'profile_form': profile_form})
 
 
 class UserEmailUpdateView(LoginRequiredMixin, View):
+    email_form = UserEmailUpdateForm
     login_url = 'account:login'
+    template_name = 'account/settings/email_change.html'
 
     def post(self, request):
-        email_form = UserEmailUpdateForm(instance=request.user,
-                                         data=request.POST)
+        email_form = self.email_form(instance=request.user,
+                                     data=request.POST)
         if email_form.is_valid():
             email_form.save()
-            messages.success(request, f'Email changed successfully')
+            messages.success(request, f'Email changed successfully.')
         return render(request,
-                      'account/settings/email_change.html',
+                      self.template_name,
                       {'email_form': email_form})
 
     def get(self, request):
-        email_form = UserEmailUpdateForm(instance=request.user)
+        email_form = self.email_form(instance=request.user)
         return render(request,
-                      'account/settings/email_change.html',
+                      self.template_name,
                       {'email_form': email_form})
 
 
