@@ -3,7 +3,6 @@ from django.db import models
 from django.urls import reverse
 
 # Create your models here.
-# https://github.com/dgrant/django_recipes/blob/ff68768fd3b1282f02bae3a041e624b8d5338f16/recipes/models.py#L319
 
 UNIT_CHOICES = [
     ('g', 'gram'),
