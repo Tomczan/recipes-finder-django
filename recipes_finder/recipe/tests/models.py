@@ -41,10 +41,6 @@ class RecipeTestCase(TestCase):
     def test_model_recipe_str(self):
         self.assertEqual(str(self.recipe), 'test_recipe')
 
-    def test_model_recipe_ingredient_str(self):
-        self.assertEqual(str(self.recipe_ingredient1),
-                         self.recipe_ingredient1.ingredient.name)
-
     def test_model_recipe_get_absolute_url(self):
         self.assertEqual(self.recipe.get_absolute_url(),
                          '/recipe/test_recipe/3')
