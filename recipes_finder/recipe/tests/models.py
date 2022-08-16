@@ -13,7 +13,6 @@ class RecipeTestCase(TestCase):
         self.ingredient2 = Ingredient.objects.create(name='paprika',
                                                      prefered_unit='g',
                                                      type=self.ingredient_type)
-
         self.recipe = Recipe.objects.create(name='test_recipe',
                                             slug='test_recipe',
                                             description='description for test recipe',
@@ -43,4 +42,4 @@ class RecipeTestCase(TestCase):
 
     def test_model_recipe_get_absolute_url(self):
         self.assertEqual(self.recipe.get_absolute_url(),
-                         '/recipe/test_recipe/3')
+                         f'/recipe/test_recipe/{self.recipe.id}')
