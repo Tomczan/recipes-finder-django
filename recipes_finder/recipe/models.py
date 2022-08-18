@@ -1,6 +1,7 @@
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
+from django.utils.text import slugify
 
 # Create your models here.
 
@@ -39,7 +40,8 @@ class Recipe(models.Model):
         ('hidden', 'Hidden')
     )
     name = models.CharField(max_length=200)
-    slug = models.SlugField(max_length=200, unique_for_date='created')
+    slug = models.SlugField(
+        max_length=200, unique_for_date='created', blank=True)
     description = models.TextField()
     instructions = models.TextField()
     # image = models.ImageField(
@@ -52,13 +54,18 @@ class Recipe(models.Model):
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(
-        Ingredient, through='RecipeIngredients')
+        Ingredient, through='RecipeIngredients', blank=True)
 
     class Meta:
         ordering = ('-created',)
 
     def __str__(self) -> str:
         return self.name
+
+    def save(self, *args, **kwargs):
+        if not self.slug:
+            self.slug = slugify(self.name)
+        super().save(*args, **kwargs)
 
     def get_absolute_url(self):
         return reverse("recipe:recipe_detail",

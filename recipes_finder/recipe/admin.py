@@ -22,3 +22,4 @@ class IngredientAdmin(admin.ModelAdmin):
 @admin.register(Recipe)
 class RecipeAdmin(admin.ModelAdmin):
     inlines = (RecipeIngredientsInLine,)
+    prepopulated_fields = {'slug': ('name',)}

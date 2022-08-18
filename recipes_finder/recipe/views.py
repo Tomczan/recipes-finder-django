@@ -1,8 +1,10 @@
-from django.shortcuts import get_object_or_404, render
-
-from .models import Recipe
-
 from account.forms import LoginForm
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.shortcuts import get_object_or_404, redirect, render
+from django.views.generic.edit import CreateView
+
+from .forms import RecipeCreateForm
+from .models import Recipe, IngredientType
 
 # Create your views here.
 
@@ -24,3 +26,14 @@ def recipe_detail(request, slug, id):
     return render(request,
                   'recipe/detail.html',
                   {'recipe': recipe})
+
+
+class RecipeCreateView(LoginRequiredMixin, CreateView):
+    form_class = RecipeCreateForm
+    template_name = 'recipe/create.html'
+
+    def form_valid(self, form):
+        obj = form.save(commit=False)
+        obj.author = self.request.user
+        # obj.save()
+        return super().form_valid(form)
