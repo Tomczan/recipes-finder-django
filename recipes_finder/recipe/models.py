@@ -74,7 +74,7 @@ class Recipe(models.Model):
 
 
 class RecipeIngredients(models.Model):
-    amount = models.IntegerField(default=0)
+    quantity = models.IntegerField(default=0)
     unit = models.CharField(max_length=2, choices=UNIT_CHOICES, blank=False)
     ingredient = models.ForeignKey(
         Ingredient, on_delete=models.PROTECT, related_name='ingredient_to_recipe')
