@@ -4,6 +4,10 @@
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
+        {{ formset.management_form }}
+        {% for ingredient in formset %}
+            {{ ingredient.as_p }}
+        {% endfor %}
         <input type="submit" value="Save">
     </form>
 {% endblock content %}
