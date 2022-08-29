@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.edit import CreateView
 from django.forms import formset_factory, inlineformset_factory, modelformset_factory
+from django.contrib import messages
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -48,7 +49,6 @@ def recipe_create(request):
     if request.method == 'POST':
         recipe_form = RecipeCreateForm(request.POST)
         formset = IngredientInlineFormSet(request.POST)
-        # print(request.POST)
         if recipe_form.is_valid() and formset.is_valid():
             recipe = recipe_form.save(commit=False)
             recipe.author = request.user
@@ -56,9 +56,6 @@ def recipe_create(request):
 
             formset = formset.cleaned_data
             for i in formset:
-                # Work in progress
-                # empty form from formset can pass through
-                # formset.is_valid() -> True, even with empty form
                 try:
                     ingredient = RecipeIngredients(quantity=i['quantity'], unit=i['unit'],
                                                    ingredient=i['ingredient'], recipe=recipe)
@@ -66,7 +63,9 @@ def recipe_create(request):
                 except:
                     print(
                         f'Cannot add ingredient to the recipe from this form: {i}')
-        # print(formset.non_form_errors())
+            messages.success(
+                request, f'The recipe "{recipe.name}" has been added.')
+            return redirect('recipe:recipe_create')
 
     recipe_form = RecipeCreateForm()
     formset = IngredientInlineFormSet()

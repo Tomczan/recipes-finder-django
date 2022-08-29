@@ -19,7 +19,7 @@ class RecipeTestCase(TestCase):
                                             instructions='instructions for test recipe',
                                             author=self.user,
                                             )
-        self.recipe_ingredient1 = RecipeIngredients(amount=120,
+        self.recipe_ingredient1 = RecipeIngredients(quantity=120,
                                                     unit='g',
                                                     ingredient=self.ingredient1,
                                                     recipe=self.recipe)
