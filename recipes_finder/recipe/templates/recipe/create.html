@@ -1,13 +1,28 @@
 {% extends "base.html" %}
+{% load static %}
+
 
 {% block content %}
     <form method="post">
         {% csrf_token %}
         {{ form.as_p }}
         {{ formset.management_form }}
-        {% for ingredient in formset %}
-            {{ ingredient.as_p }}
-        {% endfor %}
+        <div id='ingredient-form-list'>
+        {% for ingredient_form in formset %}
+            <div class="ingredient-form">
+                {{ ingredient_form.as_p }}
+            </div>            
+        {% endfor %}   
+        </div>    
+        
+        <div id='empty-form' class='hidden-formset'>
+            {{ formset.empty_form.as_p }}
+        </div>
+        <button id='add-more' type='button'>Add more</button>
         <input type="submit" value="Save">
     </form>
 {% endblock content %}
+
+{% block js %}
+<script src="{% static 'recipe/js/new-form-in-formset.js' %}"></script>
+{% endblock js %}

@@ -45,7 +45,9 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
 @login_required
 def recipe_create(request):
     IngredientInlineFormSet = inlineformset_factory(Recipe,
-                                                    RecipeIngredients, form=RecipeIngredientsForm, extra=1)
+                                                    RecipeIngredients,
+                                                    form=RecipeIngredientsForm,
+                                                    extra=0)
     if request.method == 'POST':
         recipe_form = RecipeCreateForm(request.POST)
         formset = IngredientInlineFormSet(request.POST)

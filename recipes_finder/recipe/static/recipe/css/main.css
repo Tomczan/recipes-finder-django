@@ -27,3 +27,8 @@ header
 {
     color: rgb(0, 212, 145);
 }
+
+.hidden-formset 
+{
+    display: none;
+}
