@@ -1,9 +1,10 @@
+from multiprocessing import context
 from account.forms import LoginForm
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic.edit import CreateView
-from django.forms import formset_factory, inlineformset_factory, modelformset_factory
+from django.views.generic.edit import CreateView, UpdateView
+from django.forms import inlineformset_factory
 from django.contrib import messages
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
@@ -17,37 +18,50 @@ def home(request):
     return render(request, "home.html", {'login_form': login_form})
 
 
-def recipe_list(request):
+def recipe_list_view(request):
     recipes = Recipe.objects.all()
     return render(request,
                   'recipe/list.html',
                   {'recipes': recipes})
 
 
-def recipe_detail(request, slug, id):
+def recipe_detail_view(request, slug, id):
     recipe = get_object_or_404(Recipe, slug=slug, id=id)
     return render(request,
                   'recipe/detail.html',
                   {'recipe': recipe})
 
 
-class RecipeCreateView(LoginRequiredMixin, CreateView):
-    form_class = RecipeCreateForm
-    template_name = 'recipe/create.html'
-
-    def form_valid(self, form):
-        obj = form.save(commit=False)
-        obj.author = self.request.user
-        # obj.save()
-        return super().form_valid(form)
-
-
 @login_required
-def recipe_create(request):
+def recipe_update_view(request, id):
     IngredientInlineFormSet = inlineformset_factory(Recipe,
                                                     RecipeIngredients,
                                                     form=RecipeIngredientsForm,
-                                                    extra=0)
+                                                    extra=0,
+                                                    can_delete=False)
+    recipe = get_object_or_404(Recipe, id=id)
+    if request.user != recipe.author:
+        return redirect('recipe:recipe_list')
+    recipe_form = RecipeCreateForm(instance=recipe)
+    qs = RecipeIngredients.objects.filter(recipe=recipe)
+    print(qs)
+    formset = IngredientInlineFormSet(instance=recipe, queryset=qs)
+    template_name = 'recipe/update.html'
+    context = {
+        "recipe": recipe,
+        "form": recipe_form,
+        "formset": formset
+    }
+    return render(request, template_name, context)
+
+
+@login_required
+def recipe_create_view(request):
+    IngredientInlineFormSet = inlineformset_factory(Recipe,
+                                                    RecipeIngredients,
+                                                    form=RecipeIngredientsForm,
+                                                    extra=0,
+                                                    can_delete=False)
     if request.method == 'POST':
         recipe_form = RecipeCreateForm(request.POST)
         formset = IngredientInlineFormSet(request.POST)
