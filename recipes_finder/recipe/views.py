@@ -72,17 +72,12 @@ def recipe_create_view(request):
 
             formset = formset.cleaned_data
             for i in formset:
-                try:
-                    ingredient = RecipeIngredients(quantity=i['quantity'], unit=i['unit'],
-                                                   ingredient=i['ingredient'], recipe=recipe)
-                    ingredient.save()
-                except:
-                    print(
-                        f'Cannot add ingredient to the recipe from this form: {i}')
+                ingredient = RecipeIngredients(quantity=i['quantity'], unit=i['unit'],
+                                               ingredient=i['ingredient'], recipe=recipe)
+                ingredient.save()
             messages.success(
                 request, f'The recipe "{recipe.name}" has been added.')
             return redirect('recipe:recipe_create')
-
     recipe_form = RecipeCreateForm()
     formset = IngredientInlineFormSet()
     template_name = 'recipe/create.html'
