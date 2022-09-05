@@ -42,10 +42,25 @@ def recipe_update_view(request, id):
     recipe = get_object_or_404(Recipe, id=id)
     if request.user != recipe.author:
         return redirect('recipe:recipe_list')
-    recipe_form = RecipeCreateForm(instance=recipe)
+    recipe_form = RecipeCreateForm(request.POST or None,
+                                   instance=recipe)
     qs = RecipeIngredients.objects.filter(recipe=recipe)
-    print(qs)
-    formset = IngredientInlineFormSet(instance=recipe, queryset=qs)
+    formset = IngredientInlineFormSet(request.POST or None,
+                                      instance=recipe,
+                                      queryset=qs)
+    if recipe_form.is_valid() and formset.is_valid():
+        recipe.save()
+        formset = formset.cleaned_data
+        for i in formset:
+            if i:
+                ingredient = RecipeIngredients(quantity=i['quantity'],
+                                               unit=i['unit'],
+                                               ingredient=i['ingredient'],
+                                               recipe=recipe)
+                ingredient.save()
+        messages.success(
+            request, f'The recipe "{recipe.name}" has been edited.')
+        return redirect('recipe:recipe_list')
     template_name = 'recipe/update.html'
     context = {
         "recipe": recipe,
@@ -62,24 +77,23 @@ def recipe_create_view(request):
                                                     form=RecipeIngredientsForm,
                                                     extra=0,
                                                     can_delete=False)
-    if request.method == 'POST':
-        recipe_form = RecipeCreateForm(request.POST)
-        formset = IngredientInlineFormSet(request.POST)
-        if recipe_form.is_valid() and formset.is_valid():
-            recipe = recipe_form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-
-            formset = formset.cleaned_data
-            for i in formset:
-                ingredient = RecipeIngredients(quantity=i['quantity'], unit=i['unit'],
-                                               ingredient=i['ingredient'], recipe=recipe)
+    recipe_form = RecipeCreateForm(request.POST or None)
+    formset = IngredientInlineFormSet(request.POST or None)
+    if recipe_form.is_valid() and formset.is_valid():
+        recipe = recipe_form.save(commit=False)
+        recipe.author = request.user
+        recipe.save()
+        formset = formset.cleaned_data
+        for i in formset:
+            if i:
+                ingredient = RecipeIngredients(quantity=i['quantity'],
+                                               unit=i['unit'],
+                                               ingredient=i['ingredient'],
+                                               recipe=recipe)
                 ingredient.save()
-            messages.success(
-                request, f'The recipe "{recipe.name}" has been added.')
-            return redirect('recipe:recipe_create')
-    recipe_form = RecipeCreateForm()
-    formset = IngredientInlineFormSet()
+        messages.success(
+            request, f'The recipe "{recipe.name}" has been added.')
+        return redirect('recipe:recipe_create')
     template_name = 'recipe/create.html'
     context = {
         "form": recipe_form,
