@@ -48,11 +48,11 @@ def recipe_update_view(request, id):
     if recipe_form.is_valid() and formset.is_valid():
         recipe.save()
         formset = formset.cleaned_data
-        for i in formset:
-            if i:
-                ingredient = RecipeIngredients(quantity=i['quantity'],
-                                               unit=i['unit'],
-                                               ingredient=i['ingredient'],
+        for form in formset:
+            if form:
+                ingredient = RecipeIngredients(quantity=form['quantity'],
+                                               unit=form['unit'],
+                                               ingredient=form['ingredient'],
                                                recipe=recipe)
                 ingredient.save()
         messages.success(
@@ -81,11 +81,11 @@ def recipe_create_view(request):
         recipe.author = request.user
         recipe.save()
         formset = formset.cleaned_data
-        for i in formset:
-            if i:
-                ingredient = RecipeIngredients(quantity=i['quantity'],
-                                               unit=i['unit'],
-                                               ingredient=i['ingredient'],
+        for form in formset:
+            if form:
+                ingredient = RecipeIngredients(quantity=form['quantity'],
+                                               unit=form['unit'],
+                                               ingredient=form['ingredient'],
                                                recipe=recipe)
                 ingredient.save()
         messages.success(
