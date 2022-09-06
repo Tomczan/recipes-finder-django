@@ -1,15 +1,18 @@
+from multiprocessing import context
 from django.contrib import messages
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.http import HttpResponse
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views import View
+from django.views.generic.list import ListView
 
-from .forms import (LoginForm, ProfileUpdateForm, UserUpdateForm,
-                    UserEmailUpdateForm, UserPasswordUpdateForm,
-                    UserRegistrationForm)
+from .forms import (LoginForm, ProfileUpdateForm, UserEmailUpdateForm,
+                    UserPasswordUpdateForm, UserRegistrationForm,
+                    UserUpdateForm)
+from recipe.models import Recipe
 
 # Create your views here.
 
@@ -105,6 +108,14 @@ class UserEmailUpdateView(LoginRequiredMixin, View):
                       self.template_name,
                       {'email_form': email_form})
 
+
+class UserRecipesListView(ListView):
+    model = Recipe
+    template_name: str = 'account/recipes.html'
+    paginate_by: int = 20
+
+    def get_queryset(self):
+        return Recipe.objects.filter(author=self.request.user)
 
 # class UserPasswordChangeView(LoginRequiredMixin, View):
 #     login_url = 'account:login'

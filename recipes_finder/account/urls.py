@@ -1,6 +1,6 @@
 from django.urls import path, reverse_lazy
 from django.contrib.auth import views as auth_views
-from .views import RegisterView, UserEmailUpdateView, UserAndProfileUpdateView
+from .views import *
 
 app_name = 'account'
 
@@ -34,4 +34,5 @@ urlpatterns = [
     path('settings/email/', UserEmailUpdateView.as_view(), name='email_change'),
     path('settings/profile/', UserAndProfileUpdateView.as_view(),
          name='profile_info_change'),
+    path('recipes/', UserRecipesListView.as_view(), name='user_recipes')
 ]
