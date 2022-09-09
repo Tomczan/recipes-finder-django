@@ -31,13 +31,13 @@ def recipe_detail_view(request, slug, id):
 
 
 @login_required
-def recipe_update_view(request, id):
+def recipe_update_view(request, slug, id):
     IngredientInlineFormSet = inlineformset_factory(Recipe,
                                                     RecipeIngredients,
                                                     form=RecipeIngredientsForm,
                                                     extra=0,
                                                     can_delete=False)
-    recipe = get_object_or_404(Recipe, id=id)
+    recipe = get_object_or_404(Recipe, slug=slug, id=id)
     if request.user != recipe.author:
         return redirect('recipe:recipe_list')
     recipe_form = RecipeCreateForm(request.POST or None,
