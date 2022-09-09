@@ -34,5 +34,4 @@ urlpatterns = [
     path('settings/email/', UserEmailUpdateView.as_view(), name='email_change'),
     path('settings/profile/', UserAndProfileUpdateView.as_view(),
          name='profile_info_change'),
-    path('recipes/', UserRecipesListView.as_view(), name='user_recipes')
 ]

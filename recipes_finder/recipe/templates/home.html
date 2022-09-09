@@ -16,6 +16,8 @@ Uzytkownik {{ user.get_username }}
 <a href="http://127.0.0.1:8000/account/logout/">Logout</a>
 <br>
 <a href="http://127.0.0.1:8000/account/password_reset/">Password reset</a>
+<br>
+<a href="{% url 'recipe:my_recipes' %}">My recipes</a>
 {% endblock content %}        
 
 
