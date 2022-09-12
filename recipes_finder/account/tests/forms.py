@@ -1,7 +1,5 @@
-from xml.dom import ValidationErr
 from django.test import TestCase
 from account.forms import UserRegistrationForm
-from django import forms
 
 
 class UserRegistrationFormTestCase(TestCase):

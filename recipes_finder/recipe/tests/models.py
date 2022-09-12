@@ -42,7 +42,7 @@ class RecipeTestCase(TestCase):
 
     def test_model_recipe_get_absolute_url(self):
         self.assertEqual(self.recipe.get_absolute_url(),
-                         f'/recipe/{self.recipe.slug}/{self.recipe.id}')
+                         f'/recipe/{self.recipe.slug}/{self.recipe.id}/')
 
     def test_model_recipe_slugify_on_save(self):
         self.recipe2 = Recipe.objects.create(name='Test-3_5AZaz/!@#$%^&*(/ Y€s',
