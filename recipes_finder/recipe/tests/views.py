@@ -1,8 +1,8 @@
-from urllib import response
-from django.test import TestCase, Client
+from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from recipe.models import Recipe
 from django.contrib.auth.models import User
+from recipe.views import UserRecipesListView
 
 
 class RecipeListViewTestCase(TestCase):
@@ -17,32 +17,43 @@ class RecipeListViewTestCase(TestCase):
 
 class UserRecipeListViewTestCase(TestCase):
     def setUp(self):
+        self.factory = RequestFactory()
         self.user1 = User.objects.create(username='user1', password='12345')
-        self.recipe1 = Recipe.objects.create(name='test_recipe',
-                                             slug='test_recipe',
-                                             description='description for test recipe',
-                                             instructions='instructions for test recipe',
+        self.recipe1 = Recipe.objects.create(name='test_recipe1',
+                                             slug='test_recipe1',
+                                             description='description for test recipe1',
+                                             instructions='instructions for test recipe1',
                                              author=self.user1,
                                              )
-        self.recipe2 = Recipe.objects.create(name='test_recipe',
-                                             slug='test_recipe',
-                                             description='description for test recipe',
-                                             instructions='instructions for test recipe',
+        self.recipe2 = Recipe.objects.create(name='test_recipe2',
+                                             slug='test_recipe2',
+                                             description='description for test recipe2',
+                                             instructions='instructions for test recipe2',
                                              author=self.user1,
                                              )
         self.user2 = User.objects.create(username='user2', password='12345')
-        self.recipe3 = Recipe.objects.create(name='test_recipe',
-                                             slug='test_recipe',
-                                             description='description for test recipe',
-                                             instructions='instructions for test recipe',
+        self.recipe3 = Recipe.objects.create(name='test_recipe3',
+                                             slug='test_recipe3',
+                                             description='description for test recipe3',
+                                             instructions='instructions for test recipe3',
                                              author=self.user2,
                                              )
 
-    def test_user_recipe_list_view(self):
-        client = Client()
+    def test_status_code(self):
+        request = self.factory.get('/recipe/my_recipes')
+        request.user = self.user1
+        response = UserRecipesListView.as_view()(request)
 
-        # response =
-        # DOKONCZ TEST
+        self.assertEqual(response.status_code, 200)
+
+    def test_context_data(self):
+        request = self.factory.get('/recipe/my_recipes')
+        request.user = self.user1
+        response = UserRecipesListView.as_view()(request)
+        qs = response.context_data['object_list']
+
+        self.assertNotIn(self.recipe3, list(qs))
+        self.assertEqual(len(qs), 2)
 
 
 class RecipeDetailViewTestCase(TestCase):
@@ -55,7 +66,7 @@ class RecipeDetailViewTestCase(TestCase):
                                             author=self.user,
                                             )
 
-    def test_recipe_detail_view(self):
+    def test_detail(self):
         client = Client()
 
         response = client.get(reverse('recipe:recipe_detail',
