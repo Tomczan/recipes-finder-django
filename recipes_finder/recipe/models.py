@@ -2,8 +2,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
 from django.utils.text import slugify
-
-# Create your models here.
+from taggit.managers import TaggableManager
 
 UNIT_CHOICES = [
     ('g', 'gram'),
@@ -44,8 +43,7 @@ class Recipe(models.Model):
         max_length=200, unique_for_date='created', blank=True)
     description = models.TextField()
     instructions = models.TextField()
-    # image = models.ImageField(
-    #     upload_to='recipes/%Y/%m/%d', height_field=None, width_field=None, max_length=100)
+    image = models.ImageField(upload_to='recipes/%Y/%m/%d', blank=True)
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     status = models.CharField(max_length=10,
@@ -55,6 +53,8 @@ class Recipe(models.Model):
         User, on_delete=models.CASCADE, related_name='recipes')
     ingredients = models.ManyToManyField(
         Ingredient, through='RecipeIngredients', blank=True)
+    objects = models.Manager()  # default Manager
+    tags = TaggableManager()  # taggit
 
     class Meta:
         ordering = ('-created',)
