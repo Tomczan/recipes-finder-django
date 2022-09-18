@@ -46,7 +46,7 @@ class UserRecipeListViewTestCase(TestCase):
 
         self.assertEqual(response.status_code, 200)
 
-    def test_context_data(self):
+    def test_get_queryset(self):
         request = self.factory.get('/recipe/my_recipes')
         request.user = self.user1
         response = UserRecipesListView.as_view()(request)
@@ -66,9 +66,8 @@ class RecipeDetailViewTestCase(TestCase):
                                             author=self.user,
                                             )
 
-    def test_detail(self):
+    def test_details(self):
         client = Client()
-
         response = client.get(reverse('recipe:recipe_detail',
                                       kwargs={'slug': self.recipe.slug, 'id': self.recipe.id}))
 
