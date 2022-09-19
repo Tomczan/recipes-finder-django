@@ -1,3 +1,4 @@
+from email.policy import default
 from django.contrib.auth.models import User
 from django.db import models
 from django.urls import reverse
@@ -43,7 +44,8 @@ class Recipe(models.Model):
         max_length=200, unique_for_date='created', blank=True)
     description = models.TextField()
     instructions = models.TextField()
-    image = models.ImageField(upload_to='recipes/%Y/%m/%d', blank=True)
+    image = models.ImageField(
+        upload_to='recipe/img/%Y/%m/%d', default='recipe/img/default.png')
     created = models.DateTimeField(auto_now=False, auto_now_add=True)
     updated = models.DateTimeField(auto_now=True, auto_now_add=False)
     status = models.CharField(max_length=10,
@@ -54,7 +56,7 @@ class Recipe(models.Model):
     ingredients = models.ManyToManyField(
         Ingredient, through='RecipeIngredients', blank=True)
     objects = models.Manager()  # default Manager
-    tags = TaggableManager()  # taggit
+    tags = TaggableManager(blank=True)  # taggit
 
     class Meta:
         ordering = ('-created',)
