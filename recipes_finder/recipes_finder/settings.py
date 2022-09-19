@@ -47,6 +47,7 @@ INSTALLED_APPS = [
     'recipe',
     'api',
     'taggit',
+    'easy_thumbnails',
 ]
 
 MIDDLEWARE = [
