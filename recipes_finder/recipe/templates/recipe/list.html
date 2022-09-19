@@ -1,9 +1,26 @@
 {% extends "base.html" %}
+{% load static %}
+{% load thumbnail %}
 
 {% block content %}
+<div class="table-responsive">
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th scope="col">Img</th>
+                <th scope="col">Name</th>
+                <th scope="col">Description</th>
+            </tr>
+        </thead>
 {% for recipe in recipes %}
-<h2>
-    <a href="{{ recipe.get_absolute_url }}">{{recipe.name}}</a>
-</h2>
+        <tbody>
+            <tr>
+                <th scope="row"><img src="{% thumbnail recipe.image 100x0 %}"></th>
+                <td><a href="{{ recipe.get_absolute_url }}">{{recipe.name}}</a></td>
+                <td>{{recipe.description}}</td>
+            </tr>
 {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock content %}
