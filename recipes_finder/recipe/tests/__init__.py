@@ -1,2 +1,2 @@
-from .models import *
-from .views import *
+from recipe.models import *
+from recipe.views import *

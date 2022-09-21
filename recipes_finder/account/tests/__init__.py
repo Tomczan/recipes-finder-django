@@ -1,2 +1,2 @@
-from .model import *
-from .forms import *
+from account.models import *
+from account.forms import *
