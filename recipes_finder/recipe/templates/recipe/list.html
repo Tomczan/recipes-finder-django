@@ -10,14 +10,16 @@
                 <th scope="col">Img</th>
                 <th scope="col">Name</th>
                 <th scope="col">Description</th>
+                <th scope="col">Created</th>
             </tr>
         </thead>
 {% for recipe in recipes %}
         <tbody>
             <tr>
                 <th scope="row"><img src="{% thumbnail recipe.image 100x0 %}"></th>
-                <td><a href="{{ recipe.get_absolute_url }}">{{recipe.name}}</a></td>
-                <td>{{recipe.description}}</td>
+                <td><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></td>
+                <td>{{ recipe.description }}</td>
+                <td>{{ recipe.created|timesince }} ago</td>
             </tr>
 {% endfor %}
         </tbody>
