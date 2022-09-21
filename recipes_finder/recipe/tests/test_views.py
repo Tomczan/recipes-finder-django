@@ -6,10 +6,11 @@ from recipe.views import UserRecipesListView
 
 
 class RecipeListViewTestCase(TestCase):
-    def test_recipe_list_view(self):
-        client = Client()
+    def setUp(self):
+        self.client = Client()
 
-        response = client.get(reverse('recipe:recipe_list'))
+    def test_recipe_list_view(self):
+        response = self.client.get(reverse('recipe:recipe_list'))
 
         self.assertEquals(response.status_code, 200)
         self.assertTemplateUsed(response, 'recipe/list.html')
@@ -58,6 +59,7 @@ class UserRecipeListViewTestCase(TestCase):
 
 class RecipeDetailViewTestCase(TestCase):
     def setUp(self):
+        self.client = Client()
         self.user = User.objects.create(username='user1', password='12345')
         self.recipe = Recipe.objects.create(name='test_recipe',
                                             slug='test_recipe',
@@ -67,8 +69,7 @@ class RecipeDetailViewTestCase(TestCase):
                                             )
 
     def test_details(self):
-        client = Client()
-        response = client.get(reverse('recipe:recipe_detail',
-                                      kwargs={'slug': self.recipe.slug, 'id': self.recipe.id}))
+        response = self.client.get(reverse('recipe:recipe_detail',
+                                           kwargs={'slug': self.recipe.slug, 'id': self.recipe.id}))
 
         self.assertEqual(response.status_code, 200)
