@@ -22,21 +22,18 @@ class UserRecipeListViewTestCase(TestCase):
                                              slug='test_recipe1',
                                              description='description for test recipe1',
                                              instructions='instructions for test recipe1',
-                                             author=self.user1,
-                                             )
+                                             author=self.user1)
         self.recipe2 = Recipe.objects.create(name='test_recipe2',
                                              slug='test_recipe2',
                                              description='description for test recipe2',
                                              instructions='instructions for test recipe2',
-                                             author=self.user1,
-                                             )
+                                             author=self.user1)
         self.user2 = User.objects.create(username='user2', password='12345')
         self.recipe3 = Recipe.objects.create(name='test_recipe3',
                                              slug='test_recipe3',
                                              description='description for test recipe3',
                                              instructions='instructions for test recipe3',
-                                             author=self.user2,
-                                             )
+                                             author=self.user2)
 
     def test_status_code(self):
         request = self.factory.get(self.url)
@@ -62,8 +59,7 @@ class RecipeDetailViewTestCase(TestCase):
                                             slug='test_recipe',
                                             description='description for test recipe',
                                             instructions='instructions for test recipe',
-                                            author=self.user,
-                                            )
+                                            author=self.user)
 
     def test_details(self):
         response = self.client.get(reverse('recipe:recipe_detail',

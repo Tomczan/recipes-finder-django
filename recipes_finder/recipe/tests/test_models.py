@@ -17,8 +17,7 @@ class RecipeTestCase(TestCase):
                                             slug='test_recipe',
                                             description='description for test recipe',
                                             instructions='instructions for test recipe',
-                                            author=self.user,
-                                            )
+                                            author=self.user)
         self.recipe_ingredient1 = RecipeIngredients(quantity=120,
                                                     unit='g',
                                                     ingredient=self.ingredient1,
@@ -48,8 +47,8 @@ class RecipeTestCase(TestCase):
         self.recipe2 = Recipe.objects.create(name='Test-3_5AZaz/!@#$%^&*(/ Y€s',
                                              description='description',
                                              instructions='instructions',
-                                             author=self.user,
-                                             )
+                                             author=self.user)
+
         self.assertEqual(self.recipe2.slug, 'test-3_5azaz-ys')
         self.assertNotEqual(self.recipe2.slug, self.recipe2.name)
         self.assertNotEqual(self.recipe2.slug, 'test-3_5azaz/!@#$%^&*(/ y€s')
