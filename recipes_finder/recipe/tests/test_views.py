@@ -6,9 +6,6 @@ from recipe.views import UserRecipesListView
 
 
 class RecipeListViewTestCase(TestCase):
-    def setUp(self):
-        self.client = Client()
-
     def test_recipe_list_view(self):
         response = self.client.get(reverse('recipe:recipe_list'))
 
@@ -60,7 +57,6 @@ class UserRecipeListViewTestCase(TestCase):
 
 class RecipeDetailViewTestCase(TestCase):
     def setUp(self):
-        self.client = Client()
         self.user = User.objects.create(username='user1', password='12345')
         self.recipe = Recipe.objects.create(name='test_recipe',
                                             slug='test_recipe',
@@ -78,7 +74,6 @@ class RecipeDetailViewTestCase(TestCase):
 
 class RecipeCreateViewTestCase(TestCase):
     def setUp(self):
-        self.client = Client()
         # In order to be able to login by using client:
         # - Create user, DO NOT SET password there
         #   because Django won't recognize it as properly hashed password.
