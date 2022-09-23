@@ -1,5 +1,3 @@
-from unicodedata import name
-from venv import create
 from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from recipe.models import Recipe, IngredientType, Ingredient
