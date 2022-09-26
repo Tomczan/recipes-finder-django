@@ -14,28 +14,9 @@
 <body>
     {% comment %} navbar {% endcomment %}
     {% include 'navbar.html' %}
-    {% comment %} content {% endcomment %}      
-    <div class="container">        
-        <div class="row">
-            <div class="col-md-2 d-none d-md-block">                
-                {% block left_sidebar %}{% endblock left_sidebar %}
-            </div>
-            <div class="col-xs-1 col-md-8 ">
-                {% if messages %}
-                    {% for message in messages %}
-                        <div class='alert alert-{{ message.tags }}'>
-                            {{ message }}
-                        </div>
-                    {% endfor %}
-                {% endif %}    
-                {% block content %}{% endblock content %}      
-            </div>
-            <div class="col-md-2">
-                {% block right_sidebar %}{% endblock right_sidebar %}         
-            </div>            
-        </div>
-    </div>
-    
+    {% comment %} content {% endcomment %}
+    {% block body %}      
+    {% endblock body %}    
     {% block js %}{% endblock js %}
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.5/dist/umd/popper.min.js" integrity="sha384-Xe+8cL9oJa6tN/veChSP7q+mnSPaj5Bcu9mPX5F5xIGE0DVittaqT5lorf0EI7Vk" crossorigin="anonymous"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.min.js" integrity="sha384-kjU+l4N0Yf4ZOJErLsIcvOU2qSb74wXpOhqTvwVx3OElZRweTnQ6d31fXEoRD1Jy" crossorigin="anonymous"></script>

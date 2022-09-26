@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse
 from django.views.generic.list import ListView
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
@@ -102,7 +103,7 @@ def recipe_create_view(request):
 
 class UserRecipesListView(ListView):
     model = Recipe
-    template_name: str = 'my_recipes.html'
+    template_name: str = 'recipe/my_recipes.html'
     paginate_by: int = 20
 
     def get_queryset(self):
