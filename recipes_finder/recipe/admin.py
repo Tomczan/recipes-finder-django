@@ -27,4 +27,4 @@ class RecipeAdmin(admin.ModelAdmin):
 
 @admin.register(RecipeIngredients)
 class RecipeIngredients(admin.ModelAdmin):
-    list_display = ('unit', 'quantity', 'recipe', 'ingredient')
+    list_display = ('__str__',)
