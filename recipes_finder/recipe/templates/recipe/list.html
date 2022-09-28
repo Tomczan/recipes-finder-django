@@ -13,7 +13,7 @@
                 <th scope="col">Created</th>
             </tr>
         </thead>
-{% for recipe in recipes %}
+{% for recipe in object_list %}
         <tbody>
             <tr>
                 <th scope="row"><img src="{% thumbnail recipe.image 100x0 %}"></th>

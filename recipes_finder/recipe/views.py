@@ -17,11 +17,10 @@ def home(request):
     return render(request, "home.html", {'login_form': login_form})
 
 
-def recipe_list_view(request):
-    recipes = Recipe.objects.all()
-    return render(request,
-                  'recipe/list.html',
-                  {'recipes': recipes})
+class RecipeList(ListView):
+    model = Recipe
+    template_name = 'recipe/list.html'
+    paginate_by = 10
 
 
 def recipe_detail_view(request, slug, id):

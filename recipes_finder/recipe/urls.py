@@ -4,7 +4,7 @@ from .views import *
 app_name = 'recipe'
 
 urlpatterns = [
-    path('recipe/', recipe_list_view, name='recipe_list'),
+    path('recipe/', RecipeList.as_view(), name='recipe_list'),
     path('recipe/create/', recipe_create_view, name='recipe_create'),
     path('recipe/<slug:slug>/<int:id>/update/',
          recipe_update_view, name='recipe_update'),
