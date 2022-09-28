@@ -5,6 +5,7 @@ from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import reverse
 from django.views.generic.list import ListView
+from django.views.generic.detail import DetailView
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -23,11 +24,9 @@ class RecipeList(ListView):
     paginate_by = 10
 
 
-def recipe_detail_view(request, slug, id):
-    recipe = get_object_or_404(Recipe, slug=slug, id=id)
-    return render(request,
-                  'recipe/detail.html',
-                  {'recipe': recipe})
+class RecipeDetailView(DetailView):
+    model = Recipe
+    template_name = 'recipe/detail.html'
 
 
 @login_required
