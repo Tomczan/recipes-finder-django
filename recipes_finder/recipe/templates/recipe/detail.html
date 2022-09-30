@@ -2,8 +2,9 @@
 
 {% block content %}
 <h2>
-    <a href="{{ recipe.get_absolute_url }}">{{recipe.name}}</a>
+    <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
 </h2>
     <p>Slug: {{ recipe.slug }}</p><br>
     <p>Opis: {{ recipe.description|linebreaks }}</p>
+    <p>Similar recipes: {{ similar_recipes }} </p>
 {% endblock content %}
