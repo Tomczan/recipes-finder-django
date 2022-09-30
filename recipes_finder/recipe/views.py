@@ -45,13 +45,12 @@ class RecipeDetailView(DetailView):
     template_name = 'recipe/detail.html'
 
     def get_context_data(self, **kwargs):
-        recipe = Recipe.objects.get(
-            slug=self.kwargs['slug'], id=self.kwargs['id'])
-        recipe_tags = recipe.tags.values_list('id', flat=True)
+        recipe_tags = self.object.tags.values_list('id', flat=True)
         similar_recipes = Recipe.objects.filter(
-            tags__in=recipe_tags).exclude(id=self.kwargs['id'])
+            tags__in=recipe_tags).exclude(id=self.object.id)
         similar_recipes = similar_recipes.annotate(
             same_tags=Count('tags')).order_by('-same_tags', '-updated')[:5]
+
         context = super().get_context_data(**kwargs)
         context['similar_recipes'] = similar_recipes
 
