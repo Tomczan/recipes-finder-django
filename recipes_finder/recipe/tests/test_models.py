@@ -34,7 +34,8 @@ class RecipeTestCase(TestCase):
         self.assertNotEqual(str(self.ingredient1), 'paprika')
 
     def test_model_recipe_ingredient_str(self):
-        self.assertEqual(str(self.recipe_ingredient1), 'onion')
+        self.assertEqual(str(self.recipe_ingredient1),
+                         'test_recipe: onion 120g')
 
     def test_model_recipe_str(self):
         self.assertEqual(str(self.recipe), 'test_recipe')
