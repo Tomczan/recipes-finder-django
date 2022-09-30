@@ -5,6 +5,8 @@ from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.generic.edit import FormView
+from django.contrib.postgres.search import SearchVector
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -13,14 +15,19 @@ from .models import Recipe, RecipeIngredients
 
 
 def home(request):
-    login_form = LoginForm(request.POST)
-    return render(request, "home.html", {'login_form': login_form})
+    return render(request, "home.html")
 
 
 class RecipeList(ListView):
     model = Recipe
     template_name = 'recipe/list.html'
     paginate_by = 10
+
+    def get_queryset(self):
+        if 'query' in self.request.GET:
+            query = self.request.GET['query']
+            return Recipe.objects.annotate(search=SearchVector('name', 'description'),).filter(search=query)
+        return super().get_queryset()
 
 
 class UserRecipesListView(ListView):
