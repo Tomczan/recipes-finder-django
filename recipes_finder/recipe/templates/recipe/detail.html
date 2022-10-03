@@ -1,4 +1,6 @@
-{% extends "1_col_base.html" %}
+{% extends "2_col_base.html" %}
+{% load static %}
+{% load thumbnail %}
 
 {% block content %}
 <h2>
@@ -6,5 +8,18 @@
 </h2>
     <p>Slug: {{ recipe.slug }}</p><br>
     <p>Opis: {{ recipe.description|linebreaks }}</p>
-    <p>Similar recipes: {{ similar_recipes }} </p>
+    
+      
 {% endblock content %}
+{% block right_sidebar %}
+<p>See also similar recipes:</p>
+{% for recipe in similar_recipes %}
+    <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
+    <br>
+    <img src="{% thumbnail recipe.image 300x0 %}">
+    <br>    
+    <p>Description: {{ recipe.description|truncatechars:50 }}</p>
+    <br>
+{% endfor %}
+
+{% endblock right_sidebar %}    
