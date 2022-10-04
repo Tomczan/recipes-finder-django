@@ -1,13 +1,12 @@
-from account.forms import LoginForm
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
+from django.db.models import Count
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.generic.edit import FormView
-from django.contrib.postgres.search import SearchVector
-from django.db.models import Count
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -26,12 +25,13 @@ class RecipeList(ListView):
 
     def get_queryset(self):
         if 'query' in self.request.GET:
-            query = self.request.GET['query']
-            return Recipe.objects.annotate(search=SearchVector('name', 'description'),).filter(search=query)
+            query = self.request.GET['query']            
+            return Recipe.objects.annotate(similarity=TrigramSimilarity('name', query),).\
+                filter(similarity__gt=0.1).order_by('-similarity')
         return super().get_queryset()
 
 
-class UserRecipesListView(ListView):
+class UserRecipesListView(LoginRequiredMixin, ListView):
     model = Recipe
     template_name = 'recipe/my_recipes.html'
     paginate_by = 20
@@ -57,7 +57,7 @@ class RecipeDetailView(DetailView):
         return context
 
 
-@login_required
+@ login_required
 def recipe_create_view(request):
     IngredientInlineFormSet = inlineformset_factory(Recipe,
                                                     RecipeIngredients,
@@ -89,7 +89,7 @@ def recipe_create_view(request):
     return render(request, template_name, context)
 
 
-@login_required
+@ login_required
 def recipe_update_view(request, slug, id):
     IngredientInlineFormSet = inlineformset_factory(Recipe,
                                                     RecipeIngredients,
