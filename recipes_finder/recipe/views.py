@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.postgres.search import SearchVector, SearchQuery, SearchRank, TrigramSimilarity
+from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
@@ -25,7 +25,7 @@ class RecipeList(ListView):
 
     def get_queryset(self):
         if 'query' in self.request.GET:
-            query = self.request.GET['query']            
+            query = self.request.GET['query']
             return Recipe.objects.annotate(similarity=TrigramSimilarity('name', query),).\
                 filter(similarity__gt=0.1).order_by('-similarity')
         return super().get_queryset()
@@ -98,6 +98,8 @@ def recipe_update_view(request, slug, id):
                                                     can_delete=False)
     recipe = get_object_or_404(Recipe, slug=slug, id=id)
     if request.user != recipe.author:
+        messages.warning(
+            request, 'You can not edit a recipe that is not yours.')
         return redirect('recipe:recipe_list')
     recipe_form = RecipeCreateForm(request.POST or None,
                                    instance=recipe)
