@@ -11,5 +11,11 @@ urlpatterns = [
     path('recipe/<slug:slug>/<int:id>/',
          RecipeDetailView.as_view(), name='recipe_detail'),
     path('recipe/my_recipes/', UserRecipesListView.as_view(), name='my_recipes'),
+    path('recipe/staff/recipe_to_approve/<int:id>/',
+         RecipeToApproveListView.as_view(), name='recipes_to_approve'),
+    path('recipe/staff/recipe_to_approve/',
+         RecipeToApproveListView.as_view(), name='recipes_to_approve'),
+    #     path('recipe/staff/approve_or_decline/',
+    #          RecipeApproveOrDecline.as_view(), name='approve_or_decline'),
     path('', home, name='home'),
 ]

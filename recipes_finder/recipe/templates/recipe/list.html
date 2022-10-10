@@ -18,7 +18,7 @@
             <tr>
                 <th scope="row"><img src="{% thumbnail recipe.image 100x0 %}"></th>
                 <td><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></td>
-                <td>{{ recipe.description }}</td>
+                <td>{{ recipe.description|truncatechars:80 }}</td>
                 <td>{{ recipe.created|timesince }} ago</td>
             </tr>
 {% endfor %}

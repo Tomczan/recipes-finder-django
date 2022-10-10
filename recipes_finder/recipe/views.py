@@ -5,8 +5,10 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
+from django.views import View
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -127,3 +129,30 @@ def recipe_update_view(request, slug, id):
         "formset": formset
     }
     return render(request, template_name, context)
+
+
+class RecipeToApproveListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
+    permission_required = ('recipe.add_recipe',
+                           'recipe.view_recipe',
+                           'recipe.change_recipe')
+    model = Recipe
+    template_name = 'recipe/to_approve.html'
+    paginate_by = 1
+
+    def get_queryset(self):
+        return Recipe.objects.filter(status='unapproved')
+
+    def post(self, request, id):
+        if 'approve' in request.POST:
+            recipe = get_object_or_404(Recipe, id=id)
+            recipe.status = request.POST.get('approve')
+            recipe.save()
+            messages.success(
+                request, f'The recipe "{recipe.name}" has been approved.')
+        if 'decline' in request.POST:
+            recipe = get_object_or_404(Recipe, id=id)
+            recipe.status = request.POST.get('decline')
+            recipe.save()
+            messages.success(
+                request, f'The recipe "{recipe.name}" has been declined.')
+        return redirect('recipe:recipes_to_approve')

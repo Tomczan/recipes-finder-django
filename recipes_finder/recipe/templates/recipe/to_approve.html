@@ -1,0 +1,50 @@
+{% extends "2_col_base.html" %}
+{% load static %}
+{% load thumbnail %}
+
+{% block content %}
+<div class="recipe-info">
+    {% for recipe in page_obj %}
+    <h2>
+        <a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a>
+    </h2>
+        <p>Slug: {{ recipe.slug }}</p><br>
+        <p>Description: {{ recipe.description|linebreaks }}</p>
+
+        <h5>Additional information:</h5>
+        <p>Created: {{ recipe.created }}</p>
+        <p>Updated: {{ recipe.updated }}</p>
+        <p>Status: {{ recipe.status }}</p>
+        <p>Author: {{ recipe.author.username }}</p>        
+      
+    <form action="{% url 'recipe:recipes_to_approve' recipe.id %}" method="post">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-success" name="approve" value="approved">
+            Approve
+        </button>
+        <button type="submit" class="btn btn-danger" name="decline" value="hidden">
+            Decline
+        </button>
+    </form>
+    {% endfor %}  
+</div>
+
+<div class="pagination">
+    <span class="step-links">
+        {% if page_obj.has_previous %}
+            <a href="?page=1">&laquo; first</a>
+            <a href="?page={{ page_obj.previous_page_number }}">previous</a>
+        {% endif %}
+
+        <span class="current">
+            Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        </span>
+
+        {% if page_obj.has_next %}
+            <a href="?page={{ page_obj.next_page_number }}">next</a>
+            <a href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+        {% endif %}
+    </span>
+</div>
+
+{% endblock content %}
