@@ -5,10 +5,9 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views import View
-from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
+from django.views.generic import CreateView, DetailView, ListView
 from django.contrib.auth.mixins import PermissionRequiredMixin
+from django.template import RequestContext
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -59,36 +58,41 @@ class RecipeDetailView(DetailView):
         return context
 
 
-@ login_required
-def recipe_create_view(request):
+class RecipeCreateView(LoginRequiredMixin, CreateView):
+    template_name = 'recipe/create.html'
     IngredientInlineFormSet = inlineformset_factory(Recipe,
                                                     RecipeIngredients,
                                                     form=RecipeIngredientsForm,
                                                     extra=0,
                                                     can_delete=False)
-    recipe_form = RecipeCreateForm(request.POST or None)
-    formset = IngredientInlineFormSet(request.POST or None)
-    if recipe_form.is_valid() and formset.is_valid():
-        recipe = recipe_form.save(commit=False)
-        recipe.author = request.user
-        recipe.save()
-        formset = formset.cleaned_data
-        for form in formset:
-            if form:
-                ingredient = RecipeIngredients(quantity=form['quantity'],
-                                               unit=form['unit'],
-                                               ingredient=form['ingredient'],
-                                               recipe=recipe)
-                ingredient.save()
-        messages.success(
-            request, f'The recipe "{recipe.name}" has been added.')
+
+    def get(self, request):
+        recipe_form = RecipeCreateForm()
+        formset = self.IngredientInlineFormSet()
+        context = {
+            "form": recipe_form,
+            "formset": formset
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request):
+        recipe_form = RecipeCreateForm(request.POST)
+        formset = self.IngredientInlineFormSet(request.POST)
+        if recipe_form.is_valid() and formset.is_valid():
+            recipe = recipe_form.save(commit=False)
+            recipe.author = request.user
+            recipe.save()
+            formset = formset.cleaned_data
+            for form in formset:
+                if form:
+                    ingredient = RecipeIngredients(quantity=form['quantity'],
+                                                   unit=form['unit'],
+                                                   ingredient=form['ingredient'],
+                                                   recipe=recipe)
+                    ingredient.save()
+            messages.success(
+                request, f'The recipe "{recipe.name}" has been added.')
         return redirect('recipe:recipe_create')
-    template_name = 'recipe/create.html'
-    context = {
-        "form": recipe_form,
-        "formset": formset
-    }
-    return render(request, template_name, context)
 
 
 @ login_required
