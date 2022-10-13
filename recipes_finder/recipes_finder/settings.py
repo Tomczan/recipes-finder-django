@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     'api',
     'taggit',
     'easy_thumbnails',
+    'extra_views',
 ]
 
 MIDDLEWARE = [
