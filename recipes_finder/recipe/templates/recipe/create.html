@@ -8,7 +8,7 @@
         {{ form.as_p }}
         {{ formset.management_form }}
         <div id='ingredient-form-list'>
-        {% for ingredient_form in formset %}
+        {% for ingredient_form in inlines %}
             <div class="ingredient-form">
                 {{ ingredient_form.as_p }}
             </div>            

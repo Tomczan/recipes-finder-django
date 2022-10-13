@@ -21,7 +21,7 @@
                 <td><a href="{{ recipe.get_absolute_url }}">{{ recipe.name }}</a></td>
                 <td>{{ recipe.description }}</td>
                 <td>{{ recipe.created|timesince }} ago</td>
-                <td><button> <a href="{{ recipe.get_absolute_url }}update/">Edit</a></button></td>
+                <td><button> <a href="{{ recipe.get_absolute_url }}update">Edit</a></button></td>
             </tr>
 {% endfor %}
         </tbody>

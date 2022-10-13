@@ -5,9 +5,8 @@ from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
 from django.forms import inlineformset_factory
 from django.shortcuts import get_object_or_404, redirect, render
-from django.views.generic import CreateView, DetailView, ListView
+from django.views.generic import CreateView, DetailView, ListView, UpdateView
 from django.contrib.auth.mixins import PermissionRequiredMixin
-from django.template import RequestContext
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -54,7 +53,6 @@ class RecipeDetailView(DetailView):
 
         context = super().get_context_data(**kwargs)
         context['similar_recipes'] = similar_recipes
-
         return context
 
 
@@ -83,56 +81,56 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
             recipe.author = request.user
             recipe.save()
             formset = formset.cleaned_data
+            formset = list(filter(None, formset))
             for form in formset:
-                if form:
-                    ingredient = RecipeIngredients(quantity=form['quantity'],
-                                                   unit=form['unit'],
-                                                   ingredient=form['ingredient'],
-                                                   recipe=recipe)
-                    ingredient.save()
+                RecipeIngredients.objects.create(quantity=form['quantity'],
+                                                 unit=form['unit'],
+                                                 ingredient=form['ingredient'],
+                                                 recipe=recipe)
             messages.success(
                 request, f'The recipe "{recipe.name}" has been added.')
         return redirect('recipe:recipe_create')
 
 
-@ login_required
-def recipe_update_view(request, slug, id):
+class RecipeUpdateView(LoginRequiredMixin, UpdateView):
+    model = Recipe
+    fields = ['name', 'description', 'instructions']
+    template_name = 'recipe/update.html'
     IngredientInlineFormSet = inlineformset_factory(Recipe,
                                                     RecipeIngredients,
                                                     form=RecipeIngredientsForm,
                                                     extra=0,
                                                     can_delete=False)
-    recipe = get_object_or_404(Recipe, slug=slug, id=id)
-    if request.user != recipe.author:
-        messages.warning(
-            request, 'You can not edit a recipe that is not yours.')
+
+    def get(self, request, *args, **kwargs):
+        super().get(self, request, *args, **kwargs)
+        if request.user != self.object.author:
+            messages.warning(
+                request, 'You can not edit a recipe that is not yours.')
+            return redirect('recipe:recipe_list')
+
+        recipe_form = RecipeCreateForm(instance=self.object)
+        qs = RecipeIngredients.objects.filter(recipe=self.object)
+        formset = self.IngredientInlineFormSet(instance=self.object,
+                                               queryset=qs)
+        context = {
+            "form": recipe_form,
+            "formset": formset
+        }
+        return render(request, self.template_name, context)
+
+    def post(self, request, *args, **kwargs):
+        super().post(self, request, *args, **kwargs)
+        recipe_form = RecipeCreateForm(request.POST,
+                                       instance=self.object)
+        formset = self.IngredientInlineFormSet(request.POST,
+                                               instance=self.object)
+        if recipe_form.is_valid() and formset.is_valid():
+            recipe_form.save()
+            formset.save()
+            messages.success(
+                request, f'The recipe "{self.object}" has been edited.')
         return redirect('recipe:recipe_list')
-    recipe_form = RecipeCreateForm(request.POST or None,
-                                   instance=recipe)
-    qs = RecipeIngredients.objects.filter(recipe=recipe)
-    formset = IngredientInlineFormSet(request.POST or None,
-                                      instance=recipe,
-                                      queryset=qs)
-    if recipe_form.is_valid() and formset.is_valid():
-        recipe.save()
-        formset = formset.cleaned_data
-        for form in formset:
-            if form:
-                ingredient = RecipeIngredients(quantity=form['quantity'],
-                                               unit=form['unit'],
-                                               ingredient=form['ingredient'],
-                                               recipe=recipe)
-                ingredient.save()
-        messages.success(
-            request, f'The recipe "{recipe.name}" has been edited.')
-        return redirect('recipe:recipe_list')
-    template_name = 'recipe/update.html'
-    context = {
-        "recipe": recipe,
-        "form": recipe_form,
-        "formset": formset
-    }
-    return render(request, template_name, context)
 
 
 class RecipeToApproveListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
@@ -153,6 +151,7 @@ class RecipeToApproveListView(PermissionRequiredMixin, LoginRequiredMixin, ListV
             recipe.save()
             messages.success(
                 request, f'The recipe "{recipe.name}" has been approved.')
+
         if 'decline' in request.POST:
             recipe = get_object_or_404(Recipe, id=id)
             recipe.status = request.POST.get('decline')
