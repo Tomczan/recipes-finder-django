@@ -91,7 +91,6 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
         return redirect('recipe:recipe_create')
 
 
-
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
     model = Recipe
     fields = ['name', 'description', 'instructions']
@@ -147,16 +146,14 @@ class RecipeToApproveListView(PermissionRequiredMixin, LoginRequiredMixin, ListV
     def get_queryset(self):
         return Recipe.objects.filter(status='unapproved')
 
-    def post(self, request, id):
+    def post(self, request, *args, **kwargs):
+        recipe = get_object_or_404(Recipe, id=self.kwargs['id'])
         if 'approve' in request.POST:
-            recipe = get_object_or_404(Recipe, id=id)
             recipe.status = request.POST.get('approve')
             recipe.save()
             messages.success(
                 request, f'The recipe "{recipe.name}" has been approved.')
-
         if 'decline' in request.POST:
-            recipe = get_object_or_404(Recipe, id=id)
             recipe.status = request.POST.get('decline')
             recipe.save()
             messages.success(
