@@ -55,6 +55,9 @@ class RecipeDetailView(DetailView):
         context['similar_recipes'] = similar_recipes
         return context
 
+    def get_object(self):
+        return get_object_or_404(Recipe, id=self.kwargs['id'], slug=self.kwargs['slug'])
+
 
 class RecipeCreateView(LoginRequiredMixin, CreateView):
     template_name = 'recipe/create.html'
@@ -75,21 +78,18 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
 
     def post(self, request):
         recipe_form = RecipeCreateForm(request.POST)
-        formset = self.IngredientInlineFormSet(request.POST)
-        if recipe_form.is_valid() and formset.is_valid():
+        if recipe_form.is_valid():
             recipe = recipe_form.save(commit=False)
-            recipe.author = request.user
-            recipe.save()
-            formset = formset.cleaned_data
-            formset = list(filter(None, formset))
-            for form in formset:
-                RecipeIngredients.objects.create(quantity=form['quantity'],
-                                                 unit=form['unit'],
-                                                 ingredient=form['ingredient'],
-                                                 recipe=recipe)
+            formset = self.IngredientInlineFormSet(request.POST,
+                                                   instance=recipe)
+            if formset.is_valid():
+                recipe.author = request.user
+                recipe.save()
+                formset.save()
             messages.success(
                 request, f'The recipe "{recipe.name}" has been added.')
         return redirect('recipe:recipe_create')
+
 
 
 class RecipeUpdateView(LoginRequiredMixin, UpdateView):
@@ -131,6 +131,9 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
             messages.success(
                 request, f'The recipe "{self.object}" has been edited.')
         return redirect('recipe:recipe_list')
+
+    def get_object(self):
+        return get_object_or_404(Recipe, id=self.kwargs['id'])
 
 
 class RecipeToApproveListView(PermissionRequiredMixin, LoginRequiredMixin, ListView):
