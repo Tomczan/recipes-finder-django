@@ -18,6 +18,8 @@ Uzytkownik {{ user.get_username }}
 <a href="{% url 'account:password_reset' %}">Password reset</a>
 <br>
 <a href="{% url 'recipe:my_recipes' %}">My recipes</a>
+<br>
+<a href="{% url 'recipe:recipe_create' %}">Create recipe</a>
 {% endblock content %}        
 
 

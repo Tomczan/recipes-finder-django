@@ -1,12 +1,13 @@
 from django.contrib import messages
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.mixins import (LoginRequiredMixin,
+                                        PermissionRequiredMixin)
 from django.contrib.postgres.search import TrigramSimilarity
 from django.db.models import Count
 from django.forms import inlineformset_factory
+from django.http import HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
+from django.utils.safestring import mark_safe
 from django.views.generic import CreateView, DetailView, ListView, UpdateView
-from django.contrib.auth.mixins import PermissionRequiredMixin
 
 from .forms import RecipeCreateForm, RecipeIngredientsForm
 from .models import Recipe, RecipeIngredients
@@ -86,8 +87,8 @@ class RecipeCreateView(LoginRequiredMixin, CreateView):
                 recipe.author = request.user
                 recipe.save()
                 formset.save()
-            messages.success(
-                request, f'The recipe "{recipe.name}" has been added.')
+            messages.success(request,
+                             mark_safe(f'The recipe "<a href="{recipe.get_absolute_url()}">{recipe.name}</a>" has been added.'))
         return redirect('recipe:recipe_create')
 
 
@@ -129,7 +130,7 @@ class RecipeUpdateView(LoginRequiredMixin, UpdateView):
             formset.save()
             messages.success(
                 request, f'The recipe "{self.object}" has been edited.')
-        return redirect('recipe:recipe_list')
+        return HttpResponseRedirect(request.META.get('HTTP_REFERER'))
 
     def get_object(self):
         return get_object_or_404(Recipe, id=self.kwargs['id'])

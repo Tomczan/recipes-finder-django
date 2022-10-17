@@ -7,13 +7,7 @@
             {% block left_sidebar %}{% endblock left_sidebar %}
         </div>
         <div class="col-xs-1 col-md-8 ">
-            {% if messages %}
-                {% for message in messages %}
-                    <div class='alert alert-{{ message.tags }}'>
-                        {{ message }}
-                    </div>
-                {% endfor %}
-            {% endif %}    
+            {% include 'messages.html' %}    
             {% block content %}{% endblock content %}      
         </div>
         <div class="col-md-2">
